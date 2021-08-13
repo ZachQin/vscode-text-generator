@@ -4,10 +4,10 @@
 import * as vscode from 'vscode';
 const safeEval = require('safe-eval');
 
-function processFormatWithIndex(format: string, index: number, vars: object) {
+function processTemplateWithIndex(template: string, index: number, vars: object) {
     const variableRegex = /\$\{(.+?)\}/g;
-    const resultText = format.replace(variableRegex, (substring: string, variableString: string, offset: number) => {
-        if (offset > 0 && format[offset - 1] === '$') {
+    const resultText = template.replace(variableRegex, (substring: string, variableString: string, offset: number) => {
+        if (offset > 0 && template[offset - 1] === '$') {
             // use $${} to escape
             return '{' + variableString + '}';
         }
@@ -19,10 +19,10 @@ function processFormatWithIndex(format: string, index: number, vars: object) {
     return resultText;
 }
 
-function processFormat(format: string, count: number, vars: object) {
+function processTemplate(template: string, count: number, vars: object) {
     let resultText = '';
     for (let i = 0; i < count; i++) {
-        resultText += processFormatWithIndex(format, i, vars) + '\n';
+        resultText += processTemplateWithIndex(template, i, vars) + '\n';
     }
     return resultText;
 }
@@ -34,12 +34,12 @@ export async function generateText() {
     if (editor) {
         const selection = editor.selection;
 
-        const format = await vscode.window.showInputBox({
-            title: "Input Format String",
-            prompt: "Variable ${idx} means index"
+        const template = await vscode.window.showInputBox({
+            title: "Input Template String",
+            prompt: "Variable ${idx} means 0-based index"
         });
         let count = 1;
-        if (format === undefined) {
+        if (template === undefined) {
             return;
         }
         const countStr = await vscode.window.showInputBox({
@@ -53,7 +53,7 @@ export async function generateText() {
 
         editor.edit(editBuilder => {
             try {
-                editBuilder.replace(selection, processFormat(format, count, {
+                editBuilder.replace(selection, processTemplate(template, count, {
                     sel: selectionString
                 }));
             } catch (error) {
