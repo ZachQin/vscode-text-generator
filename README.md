@@ -12,7 +12,7 @@ Generate text using template string and JavaScript expression in batches:  `${id
 
 ## Usage
 
-* Command: Generate Text
+* Command: Generate Text with Template
 * Keybindings: CTRL+ALT+G on Windows and Linux or CMD+OPTION+G on OSX
 
 You can input template string in the first Inputbox and use any JavaScript expression in `${}`. 

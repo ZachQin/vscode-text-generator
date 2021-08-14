@@ -60,7 +60,7 @@ function processTemplate(template: string, count: number, vars: object) {
     return resultText;
 }
 
-export async function generateText() {
+export async function generateTextWithTemplate() {
     // Get the active text editor
     const editor = vscode.window.activeTextEditor;
 
@@ -89,6 +89,35 @@ export async function generateText() {
                 editBuilder.replace(selection, processTemplate(template, count, {
                     sel: selectionString
                 }));
+            } catch (error) {
+                vscode.window.showErrorMessage(error.message);
+            }
+        });
+    }
+}
+
+export async function generateTextWithJSExpression() {
+    // Get the active text editor
+    const editor = vscode.window.activeTextEditor;
+
+    if (editor) {
+        const selection = editor.selection;
+
+        const expression = await vscode.window.showInputBox({
+            title: "Input JS Expression",
+        });
+        if (expression === undefined) {
+            return;
+        }
+        const document = editor.document;
+        const selectionString = document.getText(selection);
+
+        editor.edit(editBuilder => {
+            try {
+                const resultText = safeEval(expression, {
+                    sel: selectionString
+                });
+                editBuilder.replace(selection, resultText);
             } catch (error) {
                 vscode.window.showErrorMessage(error.message);
             }

@@ -3,7 +3,7 @@
 	"displayName": "Text Generator",
 	"description": "Generate Text using Template String and JavaScript Expression.",
 	"icon": "images/icon.png",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"publisher": "ZachQin",
 	"repository": {
 		"type": "git",
@@ -12,7 +12,8 @@
 	"keywords": [
 		"text generator",
 		"generate text",
-		"javascript"
+		"javascript",
+		"String Template"
 	],
 	"engines": {
 		"vscode": "^1.58.0"
@@ -21,18 +22,22 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:text-generator.generateText"
+		"onCommand:text-generator.generateTextWithTemplate",
+		"onCommand:text-generator.generateTextWithJSExpression"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "text-generator.generateText",
-				"title": "Generate Text"
+				"command": "text-generator.generateTextWithTemplate",
+				"title": "Generate Text with Template"
+			}, {
+				"command": "text-generator.generateTextWithJSExpression",
+				"title": "Generate Text with JavaScript Expression"
 			}
 		],
 		"keybindings": [{
-            "command": "text-generator.generateText",
+            "command": "text-generator.generateTextWithTemplate",
             "key": "ctrl+alt+g",
             "mac": "cmd+alt+g",
             "when": "editorTextFocus"
