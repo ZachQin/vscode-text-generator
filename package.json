@@ -3,7 +3,7 @@
 	"displayName": "Text Generator",
 	"description": "Generate Text using Template String and JavaScript Expression.",
 	"icon": "images/icon.png",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"publisher": "ZachQin",
 	"repository": {
 		"type": "git",

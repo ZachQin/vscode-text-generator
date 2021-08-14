@@ -4,18 +4,51 @@
 import * as vscode from 'vscode';
 const safeEval = require('safe-eval');
 
-function processTemplateWithIndex(template: string, index: number, vars: object) {
-    const variableRegex = /\$\{(.+?)\}/g;
-    const resultText = template.replace(variableRegex, (substring: string, variableString: string, offset: number) => {
-        if (offset > 0 && template[offset - 1] === '$') {
-            // use $${} to escape
-            return '{' + variableString + '}';
+function indexOfBracesMatch(text: string, start: number) {
+    let match = 1;
+    let pos = start;
+    while (match > 0 && pos < text.length) {
+        if (text[pos] === "{") {
+            match++;
+        } else if (text[pos] === "}") {
+            match--;
         }
-        return safeEval(variableString, {
+        pos++;
+    }
+    if (match === 0) {
+        return pos;
+    } else {
+        return -1;
+    }
+}
+
+function processTemplateWithIndex(template: string, index: number, vars: object) {
+    let resultText = '';
+    let currentIndex = 0;
+    while (currentIndex >= 0) {
+        const preIndex = currentIndex;
+        currentIndex = template.indexOf('${', currentIndex);
+        if (currentIndex < 0) {
+            resultText += template.substring(preIndex);
+            break;
+        }
+        resultText += template.substring(preIndex, currentIndex);
+        if (currentIndex > 0 && template[currentIndex - 1] === '\\') {
+            // use \${} to escape
+            currentIndex = currentIndex + 2;
+            continue;
+        }
+        const end = indexOfBracesMatch(template, currentIndex + 2);
+        if (end === -1) {
+            throw new Error("Braces not match");
+        }
+        const expression = template.substring(currentIndex + 2, end - 1);
+        resultText += safeEval(expression, {
             idx: index,
             ...vars
         });
-    });
+        currentIndex = end;
+    }
     return resultText;
 }
 
