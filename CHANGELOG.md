@@ -11,3 +11,7 @@
 ## [1.1.0]
 
 - Generate Text with JSExpression
+
+## [1.1.1]
+
+- Cache last Expression

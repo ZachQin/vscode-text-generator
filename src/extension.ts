@@ -14,13 +14,13 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable;
 
 	disposable = vscode.commands.registerCommand('text-generator.generateTextWithTemplate', () => {
-		generateTextWithTemplate();
+		generateTextWithTemplate(context);
 	});
 
 	context.subscriptions.push(disposable);
 
 	disposable = vscode.commands.registerCommand('text-generator.generateTextWithJSExpression', () => {
-		generateTextWithJSExpression();
+		generateTextWithJSExpression(context);
 	});
 
 	context.subscriptions.push(disposable);

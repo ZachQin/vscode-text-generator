@@ -4,11 +4,11 @@ A vscode extension to generate text using Template String and JavaScript Express
 
 ## Features
 
-Generate text using JavaScript expression: `${[1, 2, 3].join('-')}`
-![Generate text using JavaScript expression](images/eval_js.gif)
-
 Generate text using template string and JavaScript expression in batches:  `${idx*1} + ${idx*2} = ${idx*3}`
 ![Generate text using template string and JavaScript expression in batches](images/batch_generate.gif)
+
+Generate text using JavaScript expression: `${[1, 2, 3].join('-')}`
+![Generate text using JavaScript expression](images/eval_js.gif)
 
 ## Usage
 

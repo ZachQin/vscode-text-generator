@@ -60,7 +60,7 @@ function processTemplate(template: string, count: number, vars: object) {
     return resultText;
 }
 
-export async function generateTextWithTemplate() {
+export async function generateTextWithTemplate(context: vscode.ExtensionContext) {
     // Get the active text editor
     const editor = vscode.window.activeTextEditor;
 
@@ -96,19 +96,24 @@ export async function generateTextWithTemplate() {
     }
 }
 
-export async function generateTextWithJSExpression() {
+const LAST_JS_EXPRESSION_KEY = "lastJSExpression";
+
+export async function generateTextWithJSExpression(context: vscode.ExtensionContext) {
     // Get the active text editor
     const editor = vscode.window.activeTextEditor;
 
     if (editor) {
         const selection = editor.selection;
 
+        const globalState = context.globalState;
         const expression = await vscode.window.showInputBox({
             title: "Input JS Expression",
+            value: globalState.get(LAST_JS_EXPRESSION_KEY)
         });
         if (expression === undefined) {
             return;
         }
+        globalState.update(LAST_JS_EXPRESSION_KEY, expression);
         const document = editor.document;
         const selectionString = document.getText(selection);
 
