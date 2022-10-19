@@ -65,8 +65,6 @@ export async function generateTextWithTemplate(context: vscode.ExtensionContext)
     const editor = vscode.window.activeTextEditor;
 
     if (editor) {
-        const selection = editor.selection;
-
         const template = await vscode.window.showInputBox({
             title: "Input Template String",
             prompt: "Variable ${idx} means 0-based index"
@@ -81,16 +79,18 @@ export async function generateTextWithTemplate(context: vscode.ExtensionContext)
         if (countStr) {
             count = parseInt(countStr);
         }
-        const document = editor.document;
-        const selectionString = document.getText(selection);
-
         editor.edit(editBuilder => {
-            try {
-                editBuilder.replace(selection, processTemplate(template, count, {
-                    sel: selectionString
-                }));
-            } catch (error) {
-                vscode.window.showErrorMessage(error.message);
+            const selections = editor.selections;
+            for (let index = 0; index < selections.length; index++) {
+                const selection = selections[index];
+                const selectionString = editor.document.getText(selection);
+                try {
+                    editBuilder.replace(selection, processTemplate(template, count, {
+                        sel: selectionString
+                    }));
+                } catch (error: any) {
+                    vscode.window.showErrorMessage(error.message);
+                }
             }
         });
     }
@@ -103,8 +103,6 @@ export async function generateTextWithJSExpression(context: vscode.ExtensionCont
     const editor = vscode.window.activeTextEditor;
 
     if (editor) {
-        const selection = editor.selection;
-
         const globalState = context.globalState;
         const expression = await vscode.window.showInputBox({
             title: "Input JS Expression",
@@ -114,17 +112,19 @@ export async function generateTextWithJSExpression(context: vscode.ExtensionCont
             return;
         }
         globalState.update(LAST_JS_EXPRESSION_KEY, expression);
-        const document = editor.document;
-        const selectionString = document.getText(selection);
-
         editor.edit(editBuilder => {
-            try {
-                const resultText = safeEval(expression, {
-                    sel: selectionString
-                });
-                editBuilder.replace(selection, resultText);
-            } catch (error) {
-                vscode.window.showErrorMessage(error.message);
+            const selections = editor.selections;
+            for (let index = 0; index < selections.length; index++) {
+                const selection = selections[index];
+                const selectionString = editor.document.getText(selection);
+                try {
+                    const resultText = safeEval(expression, {
+                        sel: selectionString
+                    });
+                    editBuilder.replace(selection, resultText);
+                } catch (error: any) {
+                    vscode.window.showErrorMessage(error.message);
+                }
             }
         });
     }
